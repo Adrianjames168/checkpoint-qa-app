@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Point Fast Answer - Taglish Support</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #E63946;
+            --secondary: #1D3557;
+            --accent: #2A9D8F;
+            --bg: #0A0E27;
+            --card: #1A1F3A;
+            --text: #FFFFFF;
+            --text-dim: #8B92B8;
+            --border: #2A3154;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .language-badge {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(42, 157, 143, 0.2);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .api-key-banner {
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.2), rgba(197, 48, 59, 0.2));
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .api-key-banner h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .api-key-banner p {
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .api-key-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-direction: column;
+        }
+
+        .api-key-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .api-key-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .save-key-btn, .test-key-btn {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-key-btn {
+            background: var(--accent);
+        }
+
+        .save-key-btn:hover {
+            background: #C5303B;
+        }
+
+        .test-key-btn:hover {
+            background: #248276;
+        }
+
+        .info-box {
+            background: rgba(42, 157, 143, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .info-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .info-box ol {
+            margin-left: 1.5rem;
+            line-height: 1.8;
+            color: var(--text-dim);
+        }
+
+        .info-box a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+
+        .warning-box {
+            background: rgba(247, 127, 0, 0.1);
+            border: 1px solid #F77F00;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #F77F00;
+            font-size: 0.9rem;
+        }
+
+        .main-card {
+            background: var(--card);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .main-card.active {
+            display: block;
+        }
+
+        .api-status-bar {
+            background: rgba(42, 157, 143, 0.1);
+            padding: 1rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        .api-status-bar button {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .api-status-bar button:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .voice-section {
+            padding: 3rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(230, 57, 70, 0.1) 0%, transparent 100%);
+        }
+
+        .voice-button {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #C5303B);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(230, 57, 70, 0.4);
+            margin-bottom: 1.5rem;
+        }
+
+        .voice-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(230, 57, 70, 0.6);
+        }
+
+        .voice-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .voice-button.listening {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .mic-icon {
+            width: 50px;
+            height: 50px;
+            fill: white;
+        }
+
+        .voice-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .language-mode {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(42, 157, 143, 0.2);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .transcript {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 80px;
+            font-size: 1.2rem;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        .transcript.empty {
+            color: var(--text-dim);
+            font-style: normal;
+        }
+
+        .input-section {
+            padding: 2rem 3rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem 6rem 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .text-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .ask-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ask-btn:hover:not(:disabled) {
+            background: #C5303B;
+        }
+
+        .ask-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .option-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .option-toggle:hover {
+            background: rgba(230, 57, 70, 0.1);
+            border-color: var(--primary);
+        }
+
+        .option-toggle input {
+            accent-color: var(--primary);
+        }
+
+        .response-area {
+            padding: 3rem;
+            min-height: 400px;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 3rem 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .welcome {
+            text-align: center;
+            color: var(--text-dim);
+            padding: 2rem 0;
+        }
+
+        .welcome h3 {
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .example-questions {
+            margin-top: 2rem;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .example-questions h4 {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .example-questions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .example-questions li {
+            padding: 0.5rem 0;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        .answer-container {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: var(--text);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .answer-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .answer-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 2rem;
+        }
+
+        .example-box {
+            background: rgba(42, 157, 143, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .example-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .example-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        .response-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .response-time span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .error {
+            background: rgba(230, 57, 70, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .voice-section, .response-area {
+                padding: 2rem 1.5rem;
+            }
+
+            .input-section {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Fast Answer</h1>
+            <p class="subtitle">Ask in any language - Answers in English</p>
+            <div class="language-badge">🌏 Understands English, Tagalog & Mixed | Responds in English</div>
+        </div>
+
+        <div id="apiKeySetup" class="api-key-banner">
+            <h3>🔑 API Key Setup</h3>
+            <p>Enter your Anthropic API key to use this app.</p>
+            
+            <div class="api-key-input-wrapper">
+                <input 
+                    type="password" 
+                    id="apiKeyInput" 
+                    class="api-key-input" 
+                    placeholder="sk-ant-api03-..."
+                >
+                <div class="button-group">
+                    <button id="testKeyBtn" class="test-key-btn">Test Key</button>
+                    <button id="saveKeyBtn" class="save-key-btn">Save & Start</button>
+                </div>
+            </div>
+
+            <div class="warning-box" id="corsWarning" style="display: none;">
+                ⚠️ <strong>CORS Error:</strong> Run this on a web server, not as a local file.
+                <br><strong>Quick Fix:</strong> <code>python -m http.server</code> or use VS Code Live Server
+            </div>
+
+            <div class="info-box">
+                <h4>📋 How to get an API key:</h4>
+                <ol>
+                    <li>Go to <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a></li>
+                    <li>Sign up or log in</li>
+                    <li>Navigate to "API Keys"</li>
+                    <li>Create a new key</li>
+                    <li>Copy and paste it above</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="mainApp" class="main-card">
+            <div class="api-status-bar">
+                ✅ API Key Active <button onclick="resetApiKey()">Change Key</button>
+            </div>
+
+            <div class="voice-section">
+                <button id="voiceBtn" class="voice-button">
+                    <svg class="mic-icon" viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                    </svg>
+                </button>
+                
+                <div class="language-mode">🎤 Multi-Language Mode: English + Tagalog</div>
+                <div class="voice-status" id="status">Click to speak - Mag-salita ka</div>
+                <div class="transcript empty" id="transcript">Your question appears here | Dito lalabas ang iyong tanong...</div>
+            </div>
+
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="textInput" 
+                        class="text-input" 
+                        placeholder="Type in English, Tagalog, or mix both..."
+                        autocomplete="off"
+                    >
+                    <button id="askBtn" class="ask-btn">Ask</button>
+                </div>
+                <div class="options">
+                    <label class="option-toggle">
+                        <input type="checkbox" id="webSearch">
+                        <span>🌐 Web Search</span>
+                    </label>
+                    <label class="option-toggle">
+                        <input type="checkbox" id="checkpointFocus" checked>
+                        <span>🛡️ Check Point</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="response-area" id="response">
+                <div class="welcome">
+                    <h3>Ready for instant answers</h3>
+                    <p>Ask in English, Tagalog, or mix both - All answers in English!</p>
+                    
+                    <div class="example-questions">
+                        <h4>📝 Example Questions (All answered in English):</h4>
+                        <ul>
+                            <li>🇺🇸 "What is phishing?"</li>
+                            <li>🇵🇭 "Ano ang phishing?" → English answer</li>
+                            <li>🌏 "Ano yung difference ng malware and virus?" → English answer</li>
+                            <li>🌏 "Paano mag-prevent ng ransomware attacks?" → English answer</li>
+                            <li>🌏 "What is Zero Trust and paano ito ginagamit?" → English answer</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = localStorage.getItem('anthropic_api_key');
+        let recognition = null;
+        let isListening = false;
+
+        const apiKeySetup = document.getElementById('apiKeySetup');
+        const mainApp = document.getElementById('mainApp');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const saveKeyBtn = document.getElementById('saveKeyBtn');
+        const testKeyBtn = document.getElementById('testKeyBtn');
+        const corsWarning = document.getElementById('corsWarning');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const status = document.getElementById('status');
+        const transcript = document.getElementById('transcript');
+        const response = document.getElementById('response');
+        const textInput = document.getElementById('textInput');
+        const askBtn = document.getElementById('askBtn');
+
+        if (window.location.protocol === 'file:') {
+            corsWarning.style.display = 'block';
+        }
+
+        if (apiKey) {
+            apiKeySetup.style.display = 'none';
+            mainApp.classList.add('active');
+            initializeApp();
+        }
+
+        testKeyBtn.addEventListener('click', async () => {
+            const key = apiKeyInput.value.trim();
+            if (!key) {
+                alert('Please enter an API key');
+                return;
+            }
+            if (!key.startsWith('sk-ant-')) {
+                alert('Invalid API key format. Should start with "sk-ant-"');
+                return;
+            }
+
+            testKeyBtn.disabled = true;
+            testKeyBtn.textContent = 'Testing...';
+
+            try {
+                const res = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "x-api-key": key,
+                        "anthropic-version": "2023-06-01"
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 10,
+                        messages: [{ role: "user", content: "Hi" }]
+                    })
+                });
+
+                if (res.ok) {
+                    alert('✅ API Key is valid!');
+                    testKeyBtn.textContent = '✅ Valid';
+                } else {
+                    const error = await res.json();
+                    alert('❌ Invalid: ' + (error.error?.message || res.status));
+                    testKeyBtn.textContent = 'Test Key';
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+                corsWarning.style.display = 'block';
+                testKeyBtn.textContent = 'Test Key';
+            } finally {
+                testKeyBtn.disabled = false;
+            }
+        });
+
+        saveKeyBtn.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (!key || !key.startsWith('sk-ant-')) {
+                alert('Please enter a valid API key');
+                return;
+            }
+            localStorage.setItem('anthropic_api_key', key);
+            apiKey = key;
+            apiKeySetup.style.display = 'none';
+            mainApp.classList.add('active');
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Initialize speech recognition with Filipino language support
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = true;
+                // Set to Filipino which handles both English and Tagalog mixed
+                recognition.lang = 'fil-PH';
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    voiceBtn.classList.add('listening');
+                    status.textContent = '🎤 Listening... Nakikinig...';
+                    transcript.classList.remove('empty');
+                    transcript.textContent = '';
+                };
+
+                recognition.onresult = (event) => {
+                    let interim = '';
+                    let final = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const text = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            final += text;
+                        } else {
+                            interim += text;
+                        }
+                    }
+
+                    transcript.textContent = final || interim;
+
+                    if (final) {
+                        textInput.value = final;
+                        setTimeout(() => submitQuestion(final), 800);
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Speech error:', event.error);
+                    stopListening();
+                    
+                    if (event.error === 'not-allowed') {
+                        status.textContent = 'Mic blocked - Enable in browser settings';
+                    } else if (event.error === 'language-not-supported') {
+                        // Fallback to English if Filipino not supported
+                        recognition.lang = 'en-US';
+                        status.textContent = 'Using English mode - Try again';
+                    } else {
+                        status.textContent = 'Error - Use text input';
+                    }
+                };
+
+                recognition.onend = () => {
+                    stopListening();
+                };
+            } else {
+                voiceBtn.disabled = true;
+                status.textContent = 'Voice not supported - Use text input';
+            }
+
+            voiceBtn.addEventListener('click', () => {
+                if (!recognition) return;
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.error('Start error:', e);
+                    }
+                }
+            });
+
+            textInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !askBtn.disabled) {
+                    submitQuestion(textInput.value);
+                }
+            });
+
+            askBtn.addEventListener('click', () => {
+                submitQuestion(textInput.value);
+            });
+
+            textInput.focus();
+        }
+
+        function stopListening() {
+            isListening = false;
+            voiceBtn.classList.remove('listening');
+            status.textContent = 'Click to speak - Mag-salita ka';
+        }
+
+        function analyzeLanguageMix(text) {
+            // Always return English - we understand mixed languages but respond in English only
+            return 'english';
+        }
+
+        async function submitQuestion(question) {
+            if (!question.trim()) return;
+
+            const useWeb = document.getElementById('webSearch').checked;
+            const cpFocus = document.getElementById('checkpointFocus').checked;
+
+            const langMode = analyzeLanguageMix(question);
+            const isTagalog = langMode === 'tagalog';
+            const isTaglish = langMode === 'taglish';
+
+            const startTime = Date.now();
+
+            voiceBtn.disabled = true;
+            askBtn.disabled = true;
+            textInput.disabled = true;
+
+            const loadingText = 'Processing...';
+            response.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div style="color: var(--text-dim);">${loadingText}</div>
+                </div>
+            `;
+
+            try {
+                const systemPrompt = `You are a cybersecurity expert. IMPORTANT: ALWAYS answer in ENGLISH only, regardless of the language used in the question.
+
+CRITICAL: Be extremely brief:
+1. ONE clear answer (2-3 sentences MAX)
+2. ONE short example (1-2 sentences)
+3. NO introductions, NO extra text
+4. Total under 100 words
+5. ALWAYS respond in ENGLISH
+
+${cpFocus ? 'Mention Check Point products when relevant.' : ''}
+
+Format:
+"[Answer in 2-3 sentences]
+
+EXAMPLE: [1-2 sentence example]"`;
+
+                const tools = useWeb ? [{ type: "web_search_20250305", name: "web_search" }] : [];
+
+                const res = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "x-api-key": apiKey,
+                        "anthropic-version": "2023-06-01"
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 800,
+                        system: systemPrompt,
+                        tools: tools,
+                        messages: [{ role: "user", content: question }]
+                    })
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error?.message || `API Error: ${res.status}`);
+                }
+
+                const data = await res.json();
+                const answer = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n\n');
+
+                const endTime = Date.now();
+                const responseTime = ((endTime - startTime) / 1000).toFixed(2);
+
+                displayAnswer(question, answer, responseTime, isTagalog);
+
+            } catch (error) {
+                response.innerHTML = `
+                    <div class="error">
+                        <strong>⚠️ Error</strong>
+                        <p>${error.message}</p>
+                        ${error.message.includes('Failed to fetch') ? 
+                            '<p style="margin-top: 1rem;">CORS issue. Run on a web server.</p>' : ''}
+                        ${error.message.includes('401') ? 
+                            '<p style="margin-top: 1rem;"><a href="#" onclick="resetApiKey()" style="color: var(--accent);">Reset API Key</a></p>' : ''}
+                    </div>
+                `;
+            } finally {
+                voiceBtn.disabled = false;
+                askBtn.disabled = false;
+                textInput.disabled = false;
+                textInput.value = '';
+                textInput.focus();
+                transcript.classList.add('empty');
+                transcript.textContent = 'Your question appears here | Dito lalabas ang iyong tanong...';
+            }
+        }
+
+        function displayAnswer(question, answer, responseTime, isTagalog) {
+            // Always use English format
+            const parts = answer.split(/EXAMPLE:/i);
+            const mainAnswer = parts[0].trim();
+            const example = parts[1] ? parts[1].trim() : '';
+
+            response.innerHTML = `
+                <div class="answer-container">
+                    <div class="question-label">Question</div>
+                    <div class="question-text">${question}</div>
+                    
+                    <div class="answer-label">Answer</div>
+                    <div class="answer-text">${mainAnswer}</div>
+                    
+                    ${example ? `
+                        <div class="example-box">
+                            <div class="example-label">Example</div>
+                            <div class="example-text">${example}</div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="response-time">
+                        ⚡ Response time: <span>${responseTime}s</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetApiKey() {
+            if (confirm('Reset API key?')) {
+                localStorage.removeItem('anthropic_api_key');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
